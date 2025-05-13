@@ -96,7 +96,7 @@ const HeroSection: React.FC = () => {
 
   const handleDownloadCV = () => {
     // Replace this URL with your actual CV file URL
-    const cvUrl = '/assets/CV Mufiz.pdf';
+    const cvUrl = 'https://drive.google.com/file/d/1XTQ_o6OhKZeT73NFH2F6sC9r3iuNwily/view?usp=sharing';
     const link = document.createElement('a');
     link.href = cvUrl;
     link.download = 'developer-cv.pdf';
