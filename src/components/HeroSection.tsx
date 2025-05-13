@@ -99,6 +99,7 @@ const HeroSection: React.FC = () => {
     const cvUrl = 'https://drive.google.com/file/d/1XTQ_o6OhKZeT73NFH2F6sC9r3iuNwily/view?usp=sharing';
     const link = document.createElement('a');
     link.href = cvUrl;
+    link.target = '_blank';
     link.download = 'developer-cv.pdf';
     document.body.appendChild(link);
     link.click();
