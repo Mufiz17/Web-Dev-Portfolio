@@ -1,59 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const ContactSection: React.FC = () => {
+  const form = useRef<HTMLFormElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: ''
   });
-
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
+  const [error, setError] = useState('');
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    // Simulate form submission
-    setTimeout(() => {
+    setError('');
+    
+    try {
+      if (form.current) {
+        await emailjs.sendForm(
+          'service_8mt2gxi', // Replace with your EmailJS service ID
+          'template_apt92i1', // Replace with your EmailJS template ID
+          form.current,
+          'aL6djW_VKAgpgoJnN' // Replace with your EmailJS public key
+        );
+        
+        setSubmitted(true);
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+        
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 5000);
+      }
+    } catch (err) {
+      setError('Failed to send message. Please try again later.');
+    } finally {
       setIsSubmitting(false);
-      setSubmitted(true);
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-
-      // Reset submitted state after 5 seconds
-      setTimeout(() => {
-        setSubmitted(false);
-      }, 5000);
-    }, 1500);
+    }
   };
-
+  
   return (
-    <section id="contact" className="py-20 bg-gray-50 dark:bg-gray-800">
+    <section id="contact" className="py-20 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">Get in Touch</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Interested in working together? Reach out to discuss IoT projects, internship opportunities, or collaboration ideas.
+            Interested in working together? Reach out to discuss projects, internship opportunities, or collaboration ideas.
           </p>
         </div>
-
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
           <div>
             <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Contact Information</h3>
-
+              
               <div className="space-y-6">
                 <div className="flex items-start">
                   <Mail className="h-6 w-6 text-teal-500 mt-1 mr-4" />
@@ -64,7 +78,7 @@ const ContactSection: React.FC = () => {
                     </a>
                   </div>
                 </div>
-
+                
                 <div className="flex items-start">
                   <Phone className="h-6 w-6 text-teal-500 mt-1 mr-4" />
                   <div>
@@ -74,7 +88,7 @@ const ContactSection: React.FC = () => {
                     </a>
                   </div>
                 </div>
-
+                
                 <div className="flex items-start">
                   <MapPin className="h-6 w-6 text-teal-500 mt-1 mr-4" />
                   <div>
@@ -85,16 +99,21 @@ const ContactSection: React.FC = () => {
                   </div>
                 </div>
               </div>
-
+              
               <div className="mt-10">
                 <h4 className="text-lg font-medium text-gray-800 dark:text-white mb-3">Connect</h4>
                 <div className="flex space-x-4">
-                  <a href="https://www.instagram.com/halo__orang/" className="bg-gray-200 dark:bg-gray-700 hover:bg-teal-500 hover:text-white dark:hover:bg-teal-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors">
+                  <a href="#" className="bg-gray-200 dark:bg-gray-700 hover:bg-teal-500 hover:text-white dark:hover:bg-teal-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors">
+                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+                    </svg>
+                  </a>
+                  <a href="#" className="bg-gray-200 dark:bg-gray-700 hover:bg-teal-500 hover:text-white dark:hover:bg-teal-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors">
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                     </svg>
                   </a>
-                  <a href="https://www.linkedin.com/in/mufizihsanul/" className="bg-gray-200 dark:bg-gray-700 hover:bg-teal-500 hover:text-white dark:hover:bg-teal-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors">
+                  <a href="#" className="bg-gray-200 dark:bg-gray-700 hover:bg-teal-500 hover:text-white dark:hover:bg-teal-500 h-10 w-10 rounded-full flex items-center justify-center transition-colors">
                     <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
                     </svg>
@@ -108,11 +127,20 @@ const ContactSection: React.FC = () => {
               </div>
             </div>
           </div>
-
+          
           <div>
-            <form onSubmit={handleSubmit} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8">
+            <form ref={form} onSubmit={handleSubmit} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8">
               <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Send a Message</h3>
-
+              
+              {error && (
+                <div className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 p-4 rounded-lg flex items-center mb-6">
+                  <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"></path>
+                  </svg>
+                  <span>{error}</span>
+                </div>
+              )}
+              
               {submitted ? (
                 <div className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 p-4 rounded-lg flex items-center mb-6">
                   <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -137,7 +165,7 @@ const ContactSection: React.FC = () => {
                       placeholder="John Doe"
                     />
                   </div>
-
+                  
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Email Address
@@ -153,7 +181,7 @@ const ContactSection: React.FC = () => {
                       placeholder="john@example.com"
                     />
                   </div>
-
+                  
                   <div>
                     <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Subject
@@ -169,7 +197,7 @@ const ContactSection: React.FC = () => {
                       placeholder="Project Inquiry"
                     />
                   </div>
-
+                  
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Message
@@ -182,10 +210,10 @@ const ContactSection: React.FC = () => {
                       required
                       rows={4}
                       className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
-                      placeholder="I'd like to discuss a potential IoT project..."
+                      placeholder="I'd like to discuss a potential project..."
                     ></textarea>
                   </div>
-
+                  
                   <button
                     type="submit"
                     disabled={isSubmitting}
