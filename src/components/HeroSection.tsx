@@ -96,7 +96,7 @@ const HeroSection: React.FC = () => {
 
   const handleDownloadCV = () => {
     // Replace this URL with your actual CV file URL
-    const cvUrl = 'https://drive.google.com/file/d/1XTQ_o6OhKZeT73NFH2F6sC9r3iuNwily/view?usp=sharing';
+    const cvUrl = 'https://drive.google.com/uc?export=download&id=1XTQ_o6OhKZeT73NFH2F6sC9r3iuNwily';
     const link = document.createElement('a');
     link.href = cvUrl;
     link.target = '_blank';
